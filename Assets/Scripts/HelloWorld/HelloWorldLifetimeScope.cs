@@ -9,8 +9,8 @@ public class HelloWorldLifetimeScope : LifetimeScope
 
     protected override void Configure(IContainerBuilder builder)
     {
-		builder.Register<HelloWorldService>(Lifetime.Singleton);
-		builder.RegisterEntryPoint<HelloWorldPresenter>();
-		builder.RegisterComponent(_view);
+      builder.Register<HelloWorldService>(Lifetime.Singleton);
+      builder.RegisterEntryPoint<HelloWorldPresenter>();
+      builder.RegisterComponent(_view);
     }
 }
