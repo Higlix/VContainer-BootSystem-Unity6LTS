@@ -6,7 +6,7 @@ using UnityEngine;
 public class BootLifetimeScope : LifetimeScope
 {
     [SerializeField]
-    BootSettings bootSettings;
+    AppSettings bootSettings;
 
     protected override void Configure(IContainerBuilder builder)
     {

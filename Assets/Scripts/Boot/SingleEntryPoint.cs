@@ -1,34 +1,43 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using UnityEngine.PlayerLoop;
-using System.ComponentModel;
 using VContainer;
 using VContainer.Unity;
 
-public sealed class SingleEntryPoint : IStartable , ITickable
+public sealed class SingleEntryPoint : IStartable
 {
-    
-    [Inject]
-    public SingleEntryPoint(LifetimeScopePrefabs lifetimeScopePrefabs, LifetimeScope rootLifetimeScope)
-    {
-        // container.
-        Debug.Log("SEP Constructed");
-        LifetimeScope.Create(lifetimeScopePrefabs.bootLiftimeScopePrefab);
-    }
+    readonly AppBootstrapper bootstrapper;
 
-    public void yolo()
+    readonly LifetimeScope rootLifetimeScope;
+
+    readonly LifetimeScopePrefabs lifetimeScopePrefabs;
+
+    [Inject]
+    public SingleEntryPoint(
+            AppBootstrapper bootstrapper,
+            LifetimeScope rootLifetimeScope,
+            LifetimeScopePrefabs lifetimeScopePrefabs
+        )
     {
-        Debug.Log("Yolo");
+        this.lifetimeScopePrefabs = lifetimeScopePrefabs;
+        this.rootLifetimeScope = rootLifetimeScope;
+        this.bootstrapper = bootstrapper;
     }
 
     void IStartable.Start()
     {
-        Debug.Log("SEP");
-        // Debug.Log(_bootSettings.FPS);
-        // LifetimeScope.Find<RootLifetimeScope>().CreateChild<BootLifetimeScope>();
+        RunBootSequence().Forget();
     }
 
-    void ITickable.Tick()
+    private async UniTaskVoid RunBootSequence()
     {
+        LifetimeScope bootLifetimeScope = rootLifetimeScope.CreateChildFromPrefab
+            (lifetimeScopePrefabs.bootLiftimeScopePrefab.GetComponent<BootLifetimeScope>());
+
+        Debug.Log("BootLifetimeScope created");
+
+        await bootstrapper.BootAsync();
+
+        bootLifetimeScope.Dispose();
+        Debug.Log("BootLifetimeScope disposed");
     }
 }

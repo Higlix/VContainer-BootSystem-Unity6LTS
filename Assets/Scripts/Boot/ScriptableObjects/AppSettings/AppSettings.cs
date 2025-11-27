@@ -1,8 +1,8 @@
 using Unity;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "BootSettings", menuName = "Boot/Settings")]
-public class BootSettings : ScriptableObject
+[CreateAssetMenu(fileName = "AppSettings", menuName = "App/Settings")]
+public class AppSettings : ScriptableObject
 {
     [SerializeField]
     public bool Debug = false;
